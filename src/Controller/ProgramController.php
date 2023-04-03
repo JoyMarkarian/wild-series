@@ -35,7 +35,27 @@ public function show(int $id, ProgramRepository $programRepository):Response
     }
     return $this->render('program/show.html.twig', [
         'program' => $program,
+        'seasons' => $program->getSeasons()
     ]);
 }
 
+#[Route('/{programId<^[0-9]+$>}/season/{seasonId<^[0-9]+$>}', name: 'season_show')]
+public function showSeason(int $programId, int $seasonId, ProgramRepository $programRepository):Response
+{
+    $program = $programRepository->findOneBy(['id' => $programId]);
+    // same as $program = $programRepository->find($id);
+
+    if (!$program) {
+        throw $this->createNotFoundException(
+            'No program with id : '.$programId.' found in program\'s table.'
+        );
+    }
+    $season = $program->getSeasons()[$seasonId - 1];
+    return $this->render('program/season_show.html.twig', [
+        'program' => $program,
+        'season' => $season,
+        'episodes' => $season->getEpisodes()
+    ]);
 }
+    
+    }
