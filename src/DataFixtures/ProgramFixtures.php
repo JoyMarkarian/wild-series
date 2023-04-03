@@ -9,41 +9,40 @@ use Doctrine\Persistence\ObjectManager;
 
 class ProgramFixtures extends Fixture implements DependentFixtureInterface
 {
+    public const PROGRAMS = [
+        'Walking dead' => [
+            'synopsis' => 'Des zombies envahissent la terre',
+            'category' => 'category_Action',
+        ],
+        'True Detective' => [
+            'synopsis' => 'Des meurtres envahissent la terre',
+            'category' => 'category_Action',
+        ],
+        'Stranger things' => [
+            'synopsis' => 'Des monstres envahissent la terre',
+            'category' => 'category_Fantastique',
+        ],
+        'Game of Thrones' => [
+            'synopsis' => 'Des dragons envahissent la terre',
+            'category' => 'category_Fantastique',
+        ],
+        'Les 100' => [
+            'synopsis' => 'Des jeunes gens enlevés par des extraterrestres',
+            'category' => 'category_Aventure',
+        ],
+
+    ];
+
     public function load(ObjectManager $manager)
     {
-        $program = new Program();
-        $program->setTitle('Walking dead');
-        $program->setSynopsis('Des zombies envahissent la terre');
-        $program->setCategory($this->getReference('category_Action'));
-        $manager->persist($program);
-        $manager->flush();
-
-        $program = new Program();
-        $program->setTitle('True Detective');
-        $program->setSynopsis('Des meurtres envahissent la terre');
-        $program->setCategory($this->getReference('category_Action'));
-        $manager->persist($program);
-        $manager->flush();
-
-        $program = new Program();
-        $program->setTitle('Stranger things');
-        $program->setSynopsis('Des monstres envahissent la terre');
-        $program->setCategory($this->getReference('category_Fantastique'));
-        $manager->persist($program);
-        $manager->flush();
-
-        $program = new Program();
-        $program->setTitle('Game of Thrones');
-        $program->setSynopsis('Des dragons envahissent la terre');
-        $program->setCategory($this->getReference('category_Fantastique'));
-        $manager->persist($program);
-        $manager->flush();
-
-        $program = new Program();
-        $program->setTitle('Les 100');
-        $program->setSynopsis('Des jeunes gens enlevés par des extraterrestres');
-        $program->setCategory($this->getReference('category_Aventure'));
-        $manager->persist($program);
+        foreach (self::PROGRAMS as $title => $programData) {
+            $program = new Program();
+            $program->setTitle($title);
+            $program->setSynopsis($programData['synopsis']);
+            $program->setCategory($this->getReference($programData['category']));
+            $manager->persist($program);
+            $this->addReference('program_' . $title, $program);
+        }  
         $manager->flush();
     }
 
@@ -54,6 +53,4 @@ class ProgramFixtures extends Fixture implements DependentFixtureInterface
           CategoryFixtures::class,
         ];
     }
-
-
 }

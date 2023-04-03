@@ -26,4 +26,12 @@ class CategoryFixtures extends Fixture
         }
         $manager->flush();
     }
+
+    public function getDependencies()
+    {
+        // Tu retournes ici toutes les classes de fixtures dont CategoryFixtures dépend
+        return [
+          ProgramFixtures::class,
+        ];
+    }
 }
